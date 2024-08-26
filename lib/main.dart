@@ -2,11 +2,58 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:math_expressions/math_expressions.dart';
-
+import 'dart:async';
 void main() {
   runApp(TechCalcApp());
 }
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
 
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+
+    _controller.forward();
+
+    // Navigate to CalculatorHome after the animation completes
+    Timer(Duration(seconds: 4), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => CalculatorHome()),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: FadeTransition(
+          opacity: _animation,
+          child: Image.asset('assets/images/calc2.png'),
+        ),
+      ),
+    );
+  }
+}
 class TechCalcApp extends StatelessWidget {
   const TechCalcApp({super.key});
 
@@ -35,7 +82,7 @@ class TechCalcApp extends StatelessWidget {
           labelStyle: const TextStyle(color: Colors.teal),
         ),
       ),
-      home: CalculatorHome(),
+      home: SplashScreen(),
     );
   }
 }
