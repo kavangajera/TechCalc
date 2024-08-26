@@ -14,8 +14,26 @@ class TechCalcApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TechCalc',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Colors.teal,
+        scaffoldBackgroundColor: Colors.black,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.teal,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Colors.white),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.grey[900],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          labelStyle: const TextStyle(color: Colors.teal),
+        ),
       ),
       home: CalculatorHome(),
     );
@@ -34,10 +52,10 @@ class _CalculatorHomeState extends State<CalculatorHome> {
   String result = '';
   String derivativeResult = '';
   String integralResult = '';
-  bool _isSimple = true; // Default to simple mode
-  bool _isDifferentiation = false; // Differentiation mode flag
-  bool _isIntegration = false; // Integration mode flag
-  String _currentMode = 'Simple'; // Display current mode
+  bool _isSimple = true;
+  bool _isDifferentiation = false;
+  bool _isIntegration = false;
+  String _currentMode = 'Simple';
   final TextEditingController _diffExpressionController = TextEditingController();
   final TextEditingController _diffVariableController = TextEditingController();
   final TextEditingController _intExpressionController = TextEditingController();
@@ -90,7 +108,7 @@ class _CalculatorHomeState extends State<CalculatorHome> {
 
     final url = Uri.parse(_isDifferentiation
         ? 'http://10.0.2.2:5000/differentiate'
-        : 'http://10.0.2.2:5000/integrate'); // Use correct URL
+        : 'http://10.0.2.2:5000/integrate');
 
     try {
       final response = await http.post(
@@ -172,15 +190,13 @@ class _CalculatorHomeState extends State<CalculatorHome> {
       ),
       body: Column(
         children: <Widget>[
-          // Display current mode (Simple, Integration, Differentiation)
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Mode: $_currentMode',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.teal),
             ),
           ),
-          // Display for expression
           Expanded(
             flex: 2,
             child: Container(
@@ -190,13 +206,12 @@ class _CalculatorHomeState extends State<CalculatorHome> {
                 scrollDirection: Axis.horizontal,
                 child: Text(
                   _isSimple ? expression : (_isDifferentiation ? _diffExpressionController.text : _intExpressionController.text),
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.teal),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
           ),
-          // Display for result
           Expanded(
             flex: 2,
             child: Container(
@@ -206,7 +221,7 @@ class _CalculatorHomeState extends State<CalculatorHome> {
                 scrollDirection: Axis.horizontal,
                 child: Text(
                   _isSimple ? result : (_isDifferentiation ? derivativeResult : integralResult),
-                  style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -220,7 +235,6 @@ class _CalculatorHomeState extends State<CalculatorHome> {
                   TextField(
                     controller: _isDifferentiation ? _diffVariableController : _intVariableController,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
                       labelText: 'Enter variable (e.g., x)',
                     ),
                   ),
@@ -228,7 +242,6 @@ class _CalculatorHomeState extends State<CalculatorHome> {
                   TextField(
                     controller: _isDifferentiation ? _diffExpressionController : _intExpressionController,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
                       labelText: 'Enter expression (e.g., x**2)',
                     ),
                   ),
@@ -244,12 +257,13 @@ class _CalculatorHomeState extends State<CalculatorHome> {
           if (_isSimple) ...[
             const Divider(),
             Expanded(
-              flex: 4,
+              flex: 5, // Increased flex for more space
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 4,
-                  mainAxisSpacing: 4,
+                  crossAxisCount: 4, // 4 columns for buttons
+                  crossAxisSpacing: 4, // Increased spacing for better visibility
+                  mainAxisSpacing: 4, // Increased spacing for better visibility
+                  childAspectRatio: 1.8, // Aspect ratio to make buttons more square
                 ),
                 itemCount: 20,
                 itemBuilder: (context, index) {
@@ -265,6 +279,7 @@ class _CalculatorHomeState extends State<CalculatorHome> {
               ),
             ),
           ],
+
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -294,18 +309,18 @@ class _CalculatorHomeState extends State<CalculatorHome> {
 
   Widget _buildButton(String buttonText) {
     return Container(
-      margin: const EdgeInsets.all(4),
+      margin: const EdgeInsets.all(2),
       child: ElevatedButton(
         onPressed: () => _onButtonPressed(buttonText),
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
         ),
         child: Text(
           buttonText,
-          style: const TextStyle(fontSize: 16, color: Colors.black),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
       ),
     );
