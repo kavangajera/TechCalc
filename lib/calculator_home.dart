@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:math_expressions/math_expressions.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'login.dart';
 import 'widgets/calculator_buttons.dart'; // Import your custom widget file
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firstdemo/auth.dart';
 
 class CalculatorHome extends StatefulWidget {
   const CalculatorHome({super.key});
@@ -22,10 +25,13 @@ class _CalculatorHomeState extends State<CalculatorHome> {
   bool _isIntegration = false;
   bool _isLoading = false;
   String _currentMode = 'Simple';
+
   final TextEditingController _diffExpressionController = TextEditingController();
   final TextEditingController _diffVariableController = TextEditingController();
   final TextEditingController _intExpressionController = TextEditingController();
   final TextEditingController _intVariableController = TextEditingController();
+
+  final User? user = Auth().currentUser;
 
   void _onButtonPressed(String value) {
     setState(() {
@@ -73,7 +79,7 @@ class _CalculatorHomeState extends State<CalculatorHome> {
     }
 
     setState(() {
-      _isLoading = true; // Start loading animation
+      _isLoading = true;
     });
 
     final url = Uri.parse(_isDifferentiation
@@ -118,7 +124,7 @@ class _CalculatorHomeState extends State<CalculatorHome> {
       });
     } finally {
       setState(() {
-        _isLoading = false; // Stop loading animation
+        _isLoading = false;
       });
     }
   }
@@ -130,30 +136,41 @@ class _CalculatorHomeState extends State<CalculatorHome> {
         _isDifferentiation = false;
         _isIntegration = false;
         _currentMode = 'Simple';
-        expression = '';
-        result = '';
-        derivativeResult = '';
-        integralResult = '';
       } else if (mode == 'Differentiate') {
         _isSimple = false;
         _isDifferentiation = true;
         _isIntegration = false;
         _currentMode = 'Differentiation';
-        expression = '';
-        result = '';
-        derivativeResult = '';
-        integralResult = '';
       } else if (mode == 'Integrate') {
         _isSimple = false;
         _isDifferentiation = false;
         _isIntegration = true;
         _currentMode = 'Integration';
-        expression = '';
-        result = '';
-        derivativeResult = '';
-        integralResult = '';
       }
+      expression = '';
+      result = '';
+      derivativeResult = '';
+      integralResult = '';
     });
+  }
+
+  Future<void> signOut() async {
+    await Auth().signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()), // Navigate to LoginPage
+    );
+  }
+
+  Widget _userUid() {
+    return Text(user?.email ?? 'User email');
+  }
+
+  Widget _signOutButton() {
+    return ElevatedButton(
+      onPressed: signOut,
+      child: const Text('Sign Out'),
+    );
   }
 
   @override
@@ -161,6 +178,9 @@ class _CalculatorHomeState extends State<CalculatorHome> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('TechCalc'),
+        actions: [
+          _signOutButton(),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -210,14 +230,14 @@ class _CalculatorHomeState extends State<CalculatorHome> {
                 children: [
                   TextField(
                     controller: _isDifferentiation ? _diffVariableController : _intVariableController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Enter variable (e.g., x)',
                     ),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _isDifferentiation ? _diffExpressionController : _intExpressionController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Enter expression (e.g., x**2)',
                     ),
                   ),
@@ -235,7 +255,7 @@ class _CalculatorHomeState extends State<CalculatorHome> {
             Expanded(
               flex: 5,
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4,

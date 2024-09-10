@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'splash_screen.dart';
-import 'calculator_home.dart';
+import 'login.dart';
+import 'register.dart';
 
-void main() {
-  runApp(TechCalcApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const TechCalcApp());
 }
 
 class TechCalcApp extends StatelessWidget {
@@ -34,7 +38,11 @@ class TechCalcApp extends StatelessWidget {
           labelStyle: const TextStyle(color: Colors.teal),
         ),
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
+      },
     );
   }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1066830205800",
+    "project_id": "techcalc-d4b91",
+    "storage_bucket": "techcalc-d4b91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1066830205800:android:07ef246a5482e5dda13cdd",
+        "android_client_info": {
+          "package_name": "com.example.firstdemo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXJpQYT2EgElF3sjAhnRRXmW7O6rO7rb0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
